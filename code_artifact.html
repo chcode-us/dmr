@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Доступ ограничен | Dom.ru</title>
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --domru-red: #E4002B;
+            --domru-red-bright: #FF0033;
+            --domru-red-dark: #B30024;
+            --domru-bg: #07070a;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--domru-bg);
+            color: #ffffff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Ambient Glowing Background Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .orb-red-1 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(228, 0, 43, 0.4) 0%, rgba(228, 0, 43, 0) 70%);
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: orbFloat1 12s infinite alternate ease-in-out;
+        }
+
+        .orb-red-2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(255, 0, 51, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+            bottom: -50px;
+            right: 10%;
+            animation: orbFloat2 15s infinite alternate ease-in-out;
+        }
+
+        .orb-dark {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(20, 20, 30, 0.8) 0%, rgba(0,0,0,0) 70%);
+            top: 40%;
+            left: -100px;
+        }
+
+        @keyframes orbFloat1 {
+            0% { transform: translate(-50%, -20px) scale(0.95); opacity: 0.6; }
+            100% { transform: translate(-50%, 25px) scale(1.1); opacity: 0.9; }
+        }
+
+        @keyframes orbFloat2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-40px, -40px) scale(1.2); }
+        }
+
+        /* Glassmorphism Card Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.7),
+                0 0 80px rgba(228, 0, 43, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-radius: 28px;
+            animation: cardAppear 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes cardAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 3D Shield levitation & aura */
+        .shield-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .shield-aura {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 140px;
+            height: 140px;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(228, 0, 43, 0.6) 0%, rgba(228, 0, 43, 0) 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            animation: auraPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes auraPulse {
+            0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1.25); opacity: 0.95; }
+        }
+
+        .shield-icon {
+            animation: shieldFloat 4s ease-in-out infinite alternate;
+            filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.6));
+        }
+
+        @keyframes shieldFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(1deg); }
+            100% { transform: translateY(5px) rotate(-1deg); }
+        }
+
+        /* Custom Red Gradient Button */
+        .btn-domru {
+            background: linear-gradient(135deg, #FF0033 0%, #B30024 100%);
+            box-shadow: 0 10px 30px rgba(228, 0, 43, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-domru::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: rotate(45deg) translateY(-100%);
+            transition: all 0.6s ease;
+        }
+
+        .btn-domru:hover::after {
+            transform: rotate(45deg) translateY(100%);
+        }
+
+        .btn-domru:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(228, 0, 43, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-domru:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        /* Pulse Dot for System Status */
+        .pulse-dot {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* Grid Background Pattern */
+        .grid-bg {
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            background-position: center center;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 sm:p-6 md:p-8 relative grid-bg select-none">
+
+    <!-- Interactive Canvas for Floating Particles -->
+    <canvas id="particles-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Ambient Red Background Orbs -->
+    <div class="orb orb-red-1"></div>
+    <div class="orb orb-red-2"></div>
+    <div class="orb orb-dark"></div>
+
+    <main class="w-full max-w-xl z-10 my-auto">
+        <div class="glass-card p-6 sm:p-10 text-center relative overflow-hidden">
+            
+            <!-- Dom.ru Logo Header -->
+            <div class="flex items-center justify-center space-x-3 mb-8">
+                <!-- Red Emblem Icon -->
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gradient-to-tr from-[#B30024] to-[#FF0033] flex items-center justify-center shadow-lg shadow-red-900/40">
+                    <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="currentColor">
+                        <!-- Stylized 'D' Icon -->
+                        <path d="M5 3h7c4.418 0 8 3.582 8 8s-3.582 8-8 8H5V3zm4 4v8h3c2.209 0 4-1.791 4-4s-1.791-4-4-4H9z" />
+                    </svg>
+                </div>
+                <!-- Brand Text -->
+                <div class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                    <span class="text-white">Dom</span><span class="text-[#FF0033]">.ru</span>
+                </div>
+            </div>
+
+            <!-- 3D Metallic Shield Graphic with Aura -->
+            <div class="my-6 my-8">
+                <div class="shield-wrapper">
+                    <div class="shield-aura"></div>
+                    <svg class="shield-icon w-28 h-28 sm:w-36 sm:h-36 mx-auto relative z-10" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <!-- Metallic Outer Dark Gradient -->
+                            <linearGradient id="shieldBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#3a0913" />
+                                <stop offset="50%" stop-color="#190409" />
+                                <stop offset="100%" stop-color="#090103" />
+                            </linearGradient>
+                            <!-- Ruby Red Rim Gradient -->
+                            <linearGradient id="shieldRim" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#FF3355" />
+                                <stop offset="40%" stop-color="#E4002B" />
+                                <stop offset="100%" stop-color="#550011" />
+                            </linearGradient>
+                            <!-- Inner Glowing Core -->
+                            <linearGradient id="coreGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#FF0033" />
+                                <stop offset="100%" stop-color="#800014" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Outer Shield Body -->
+                        <path d="M100 12 L178 48 C178 138 140 192 100 222 C60 192 22 138 22 48 Z" fill="url(#shieldBg)" stroke="url(#shieldRim)" stroke-width="5" />
+                        <!-- Dashed Inner Circuit Frame -->
+                        <path d="M100 28 L164 58 C164 128 132 174 100 200 C68 174 36 128 36 58 Z" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-dasharray="8 5" />
+                        <!-- Center Shield Badge -->
+                        <path d="M100 52 L144 74 C144 122 122 154 100 174 C78 154 56 122 56 74 Z" fill="url(#coreGlow)" opacity="0.9" />
+                        <!-- Glowing Keyhole / Lock Icon -->
+                        <circle cx="100" cy="102" r="13" fill="#FFFFFF" />
+                        <polygon points="92,110 108,110 112,134 88,134" fill="#FFFFFF" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- System Status Pill -->
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-red-950/60 border border-red-500/30 text-red-300 text-xs sm:text-sm font-medium mb-5">
+                <span class="w-2 h-2 rounded-full bg-red-500 pulse-dot"></span>
+                <span>Статус: Доступ ограничен</span>
+            </div>
+
+            <!-- Main Heading -->
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+                Сайт временно недоступен
+            </h1>
+
+            <!-- Message Description -->
+            <p class="text-gray-300/80 text-sm sm:text-base leading-relaxed mb-8 max-w-lg mx-auto font-normal">
+                Доступ к этому веб-ресурсу ограничен. Вероятно, мы проводим технические работы или сайт недоступен по внешним причинам. Мы прилагаем все усилия, чтобы восстановить доступ как можно скорее.
+            </p>
+
+            <!-- Interactive Action Button -->
+            <button id="reload-btn" onclick="handleReload()" class="btn-domru w-full sm:w-auto px-8 py-4 rounded-xl text-white font-bold text-base tracking-wide flex items-center justify-center space-x-3 mx-auto">
+                <svg id="btn-icon" class="w-5 h-5 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                <span id="btn-text">Попробовать снова</span>
+            </button>
+
+            <!-- Secondary Footer Technical Info -->
+            <div class="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400 gap-2">
+                <div>
+                    Поддержка: <a href="tel:88003337000" class="text-gray-200 hover:text-white underline transition-colors">8 800 333-7000</a>
+                </div>
+                <div class="text-gray-400">
+                    Код ошибки: <span class="font-mono text-red-400">HTTP_503_RESTRICTED</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        /* Floating Canvas Particles Effect */
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.radius = Math.random() * 2 + 0.5;
+                this.vx = (Math.random() - 0.5) * 0.4;
+                this.vy = -Math.random() * 0.6 - 0.2;
+                this.alpha = Math.random() * 0.5 + 0.1;
+                this.color = Math.random() > 0.4 ? '228, 0, 43' : '255, 255, 255';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.y < 0 || this.x < 0 || this.x > width) {
+                    this.reset();
+                    this.y = height + 10;
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color}, ${this.alpha})`;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = `rgba(${this.color}, 0.8)`;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        let particles = [];
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor((width * height) / 12000);
+            for (let i = 0; i < Math.min(particleCount, 80); i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        /* Interactive Reload Button Handler */
+        function handleReload() {
+            const btn = document.getElementById('reload-btn');
+            const btnText = document.getElementById('btn-text');
+            const btnIcon = document.getElementById('btn-icon');
+
+            // Set loading state
+            btnText.innerText = "Проверка соединения...";
+            btnIcon.classList.add('animate-spin');
+            btn.style.pointerEvents = 'none';
+            btn.style.opacity = '0.85';
+
+            // Simulate connection re-check before reload
+            setTimeout(() => {
+                window.location.reload();
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
